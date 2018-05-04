@@ -145,40 +145,58 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
             raise ValueError(
                 "Failed to created output directory '%s'" % output_dir)
 
-    for sequence in os.listdir(mot_dir):
-        print("Processing %s" % sequence)
-        sequence_dir = os.path.join(mot_dir, sequence)
+    # for sequence in os.listdir(mot_dir):
+    # print("Processing %s" % sequence)
+    print("Processing %s" % mot_dir)
+    # sequence_dir = os.path.join(mot_dir, sequence)
+    sequence_dir = mot_dir
 
-        image_dir = os.path.join(sequence_dir, "img1")
-        image_filenames = {
-            int(os.path.splitext(f)[0]): os.path.join(image_dir, f)
-            for f in os.listdir(image_dir)}
+    image_dir = os.path.join(sequence_dir, "img1")
+    image_filenames = {
+        int(os.path.splitext(f)[0]): os.path.join(image_dir, f)
+        for f in os.listdir(image_dir)}
 
-        detection_file = os.path.join(
-            detection_dir, sequence, "det/det.txt")
-        detections_in = np.loadtxt(detection_file, delimiter=',')
-        detections_out = []
+    # detection_file = os.path.join(
+    #     detection_dir, sequence, "det/det.txt")
+    detection_file = os.path.join(
+        detection_dir, sequence_dir, "det/det.txt")
 
-        frame_indices = detections_in[:, 0].astype(np.int)
-        min_frame_idx = frame_indices.astype(np.int).min()
-        max_frame_idx = frame_indices.astype(np.int).max()
-        for frame_idx in range(min_frame_idx, max_frame_idx + 1):
-            print("Frame %05d/%05d" % (frame_idx, max_frame_idx))
-            mask = frame_indices == frame_idx
-            rows = detections_in[mask]
+    detections_in = np.loadtxt(detection_file, delimiter=',')
+    detections_out = []
 
-            if frame_idx not in image_filenames:
-                print("WARNING could not find image for frame %d" % frame_idx)
-                continue
-            bgr_image = cv2.imread(
-                image_filenames[frame_idx], cv2.IMREAD_COLOR)
-            features = encoder(bgr_image, rows[:, 2:6].copy())
-            detections_out += [np.r_[(row, feature)] for row, feature
-                               in zip(rows, features)]
+    frame_indices = detections_in[:, 0].astype(np.int)
+    min_frame_idx = frame_indices.astype(np.int).min()
+    max_frame_idx = frame_indices.astype(np.int).max()
+    for frame_idx in range(min_frame_idx, max_frame_idx + 1):
+        print("Frame %05d/%05d" % (frame_idx, max_frame_idx))
+        mask = frame_indices == frame_idx
+        rows = detections_in[mask]
 
-        output_filename = os.path.join(output_dir, "%s.npy" % sequence)
-        np.save(
-            output_filename, np.asarray(detections_out), allow_pickle=False)
+        if frame_idx not in image_filenames:
+            print("WARNING could not find image for frame %d" % frame_idx)
+            continue
+        bgr_image = cv2.imread(
+            image_filenames[frame_idx], cv2.IMREAD_COLOR)
+
+        # print(bgr_image.shape)
+        features = encoder(bgr_image, rows[:, 2:6].copy())
+        detections_out += [np.r_[(row, feature)] for row, feature
+                           in zip(rows, features)]
+        for index in range(rows.shape[0]):
+            x1 = int(rows[index, 2])
+            y1 = int(rows[index, 3])
+            x2 = x1 + int(rows[index, 4])
+            y2 = y1 + int(rows[index, 5])
+            cv2.rectangle(bgr_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        # print(rows)
+        cv2.imshow('frame_idx', bgr_image)
+        cv2.waitKey(1)
+
+    # output_filename = os.path.join(output_dir, "%s.npy" % sequence)
+    output_filename = os.path.join(output_dir, "%s.npy" % sequence_dir)
+    np.save(
+        output_filename, np.asarray(detections_out), allow_pickle=False)
+    cv2.destroyAllWindows()
 
 
 def parse_args():
@@ -204,9 +222,10 @@ def parse_args():
 
 def main():
     # args = parse_args()
-    encoder = create_box_encoder('/home/wuwenfu5/PycharmProjects/deep_sort-master/resources/networks/mars-small128-tf13.pb',
-                                 batch_size=32)
-    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train',
+    encoder = create_box_encoder(
+        '/home/wuwenfu5/PycharmProjects/deep_sort-master/resources/networks/mars-small128-tf13.pb',
+        batch_size=32)
+    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-05',
                         '/home/wuwenfu5/PycharmProjects/deep_sort-master/resources/detections/MOT16_train',
                         None)
 
