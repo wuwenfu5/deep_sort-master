@@ -49,6 +49,8 @@ def gather_sequence_info(sequence_dir, detection_file):
     detections = None
     if detection_file is not None:
         detections = np.load(detection_file)
+        detections = detections[:, :10]
+        print(detections.shape)
     groundtruth = None
     if os.path.exists(groundtruth_file):
         groundtruth = np.loadtxt(groundtruth_file, delimiter=',')
@@ -181,7 +183,8 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
         # Update tracker.
         tracker.predict()
         tracker.update(detections)
-
+        # print([d.tlwh for d in detections])
+        # print(np.array([track.features for track in tracker.tracks]))
         # Update visualization.
         if display:
             image = cv2.imread(

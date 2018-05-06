@@ -181,7 +181,6 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
         features = encoder(bgr_image, rows[:, 2:6].copy())
         detections_out += [np.r_[(row, feature)] for row, feature
                            in zip(rows, features)]
-
         # print('rows', rows)
         # print('features', features)
         # print([np.r_[(row, feature)] for row, feature in zip(rows, features)])
