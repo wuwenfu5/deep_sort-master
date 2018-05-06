@@ -252,7 +252,7 @@ def parse_args():
 if __name__ == "__main__":
     # args = parse_args()
     run(
-        '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-02',
+        '../MOT16/train/MOT16-02',
         './resources/detections/MOT16_train/MOT16-02.npy',
         './hypotheses.txt',
         0.3, 1.0, 0,

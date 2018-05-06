@@ -70,8 +70,7 @@ def extract_image_patch(image, bbox, patch_shape):
 
 class ImageEncoder(object):
 
-    def __init__(self, checkpoint_filename, input_name="images",
-                 output_name="features"):
+    def __init__(self, checkpoint_filename, input_name="images", output_name="features"):
         self.session = tf.Session()
         with tf.gfile.GFile(checkpoint_filename, "rb") as file_handle:
             graph_def = tf.GraphDef()
@@ -160,7 +159,7 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
     #     detection_dir, sequence, "det/det.txt")
     detection_file = os.path.join(
         detection_dir, sequence_dir, "det/det.txt")
-
+    # detection_file ='/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-02/det/det.txt'
     detections_in = np.loadtxt(detection_file, delimiter=',')
     detections_out = []
 
@@ -182,12 +181,18 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
         features = encoder(bgr_image, rows[:, 2:6].copy())
         detections_out += [np.r_[(row, feature)] for row, feature
                            in zip(rows, features)]
+
+        # print('rows', rows)
+        # print('features', features)
+        # print([np.r_[(row, feature)] for row, feature in zip(rows, features)])
+
         for index in range(rows.shape[0]):
             x1 = int(rows[index, 2])
             y1 = int(rows[index, 3])
             x2 = x1 + int(rows[index, 4])
             y2 = y1 + int(rows[index, 5])
             cv2.rectangle(bgr_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.putText(bgr_image, str('%d' % index), (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 0), 1)
         # print(rows)
         cv2.imshow('frame_idx', bgr_image)
         cv2.waitKey(1)
@@ -225,7 +230,7 @@ def main():
     encoder = create_box_encoder(
         '/home/wuwenfu5/PycharmProjects/deep_sort-master/resources/networks/mars-small128-tf13.pb',
         batch_size=32)
-    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-05',
+    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-02',
                         '/home/wuwenfu5/PycharmProjects/deep_sort-master/resources/detections/MOT16_train',
                         None)
 
