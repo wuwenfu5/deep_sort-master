@@ -52,8 +52,8 @@ def gather_sequence_info(sequence_dir, detection_file):
         detections = detections[:, :10]
         print(detections.shape)
     groundtruth = None
-    if os.path.exists(groundtruth_file):
-        groundtruth = np.loadtxt(groundtruth_file, delimiter=',')
+    # if os.path.exists(groundtruth_file):
+    #     groundtruth = np.loadtxt(groundtruth_file, delimiter=',')
 
     if len(image_filenames) > 0:
         image = cv2.imread(next(iter(image_filenames.values())),
