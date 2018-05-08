@@ -183,7 +183,7 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
                            in zip(rows, features)]
         # print('rows', rows)
         # print('features', features)
-        print([np.r_[(row, feature)] for row, feature in zip(rows, features)])
+        # print([np.r_[(row, feature)] for row, feature in zip(rows, features)])
 
         for index in range(rows.shape[0]):
             x1 = int(rows[index, 2])
@@ -195,7 +195,7 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
         # print(rows)
         cv2.imshow('frame_idx', bgr_image)
         cv2.waitKey(1)
-
+    output_dir = '../resources/detections/MOT16_train'
     # output_filename = os.path.join(output_dir, "%s.npy" % sequence)
     output_filename = os.path.join(output_dir, "%s.npy" % sequence_dir)
     np.save(
@@ -230,7 +230,7 @@ def main():
     encoder = create_box_encoder(
         '/home/wuwenfu5/PycharmProjects/deep_sort-master/resources/networks/mars-small128-tf13.pb',
         batch_size=32)
-    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-00',
+    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-22',
                         '../resources/detections/MOT16_train',
                         None)
 

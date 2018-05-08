@@ -13,6 +13,10 @@ from deep_sort import nn_matching
 from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 
+face_cascade = cv2.CascadeClassifier(
+    r'/usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
+
+
 
 def gather_sequence_info(sequence_dir, detection_file):
     """Gather sequence information, such as image filenames, detections,
@@ -49,7 +53,7 @@ def gather_sequence_info(sequence_dir, detection_file):
     detections = None
     if detection_file is not None:
         detections = np.load(detection_file)
-        detections = detections[:, :10]
+        # detections = detections[:, :10]
         print(detections.shape)
     groundtruth = None
     # if os.path.exists(groundtruth_file):
@@ -186,6 +190,7 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
         # print([d.tlwh for d in detections])
         # print(np.array([track.features for track in tracker.tracks]))
         # Update visualization.
+
         if display:
             image = cv2.imread(
                 seq_info["image_filenames"][frame_idx], cv2.IMREAD_COLOR)
@@ -199,6 +204,24 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
                 continue
             bbox = track.to_tlwh()
             results.append([frame_idx, track.track_id, bbox[0], bbox[1], bbox[2], bbox[3]])
+
+            x1 = int(bbox[0])
+            y1 = int(bbox[1])
+            x2 = int(bbox[0] + bbox[2])
+            y2 = int(bbox[1] + 0.3 * bbox[3])
+            # print(x1, x2, y1, y2)
+            # if x1 > 0 and y1 > 0 and x2 > 0 and y2 > 0:
+            roi = image[y1:y2, x1:x2, :]
+            # print(roi.shape)
+            if roi.shape[0] > 0 and roi.shape[1] > 0:
+
+                faces = face_cascade.detectMultiScale(roi, 1.3, 5)
+                print(faces)
+                vis.viewer.color = 0, 255, 0
+                for (x, y, w, h) in faces:
+                    # cv2.rectangle(roi,(x,x+w),(y,y+h),(0,255,0),10)
+                    # cv2.imshow('hhh', roi)
+                    vis.viewer.rectangle(x1 + x, y1 + y, w, h, label=str(track.track_id))
 
     # Run tracker.
     if display:
@@ -255,8 +278,8 @@ def parse_args():
 if __name__ == "__main__":
     # args = parse_args()
     run(
-        '../MOT16/train/MOT16-00',
-        './resources/detections/MOT16_train/MOT16-00.npy',
+        '../MOT16/train/MOT16-22',
+        './resources/detections/MOT16_train/MOT16-22.npy',
         './hypotheses.txt',
         0.3, 1.0, 0,
         0.2, 100, True)

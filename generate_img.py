@@ -12,7 +12,7 @@ import time
 
 t1 = time.perf_counter()
 
-cap = cv2.VideoCapture(r'/home/wuwenfu5/PycharmProjects/Three_people_cross.mp4')
+cap = cv2.VideoCapture(r'/media/wuwenfu5/Win_Ubuntu_Swap/Python_/Material/Many.mp4')
 
 if cap.isOpened() is False:
     print('capture is not opened')
@@ -31,7 +31,7 @@ while cap.isOpened():
             break
         frame_count += 1
         cv2.imwrite(str('./logs/%06d.jpg' % frame_count), frame)
-        print('write img_%06d.jpg' % frame_count)
+        print('write %06d.jpg' % frame_count)
     else:
         break
 
