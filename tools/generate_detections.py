@@ -204,33 +204,13 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
     cv2.destroyAllWindows()
 
 
-def parse_args():
-    """Parse command line arguments.
-    """
-    parser = argparse.ArgumentParser(description="Re-ID feature extractor")
-    parser.add_argument(
-        "--model",
-        default="resources/networks/mars-small128.pb",
-        help="Path to freezed inference graph protobuf.")
-    parser.add_argument(
-        "--mot_dir", help="Path to MOTChallenge directory (train or test)",
-        required=True)
-    parser.add_argument(
-        "--detection_dir", help="Path to custom detections. Defaults to "
-                                "standard MOT detections Directory structure should be the default "
-                                "MOTChallenge structure: [sequence]/det/det.txt", default=None)
-    parser.add_argument(
-        "--output_dir", help="Output directory. Will be created if it does not"
-                             " exist.", default="detections")
-    return parser.parse_args()
 
 
 def main():
-    # args = parse_args()
     encoder = create_box_encoder(
         '/home/wuwenfu5/PycharmProjects/deep_sort-master/resources/networks/mars-small128-tf13.pb',
         batch_size=32)
-    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-22',
+    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-00',
                         '../resources/detections/MOT16_train',
                         None)
 

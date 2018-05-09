@@ -205,27 +205,27 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             bbox = track.to_tlwh()
             results.append([frame_idx, track.track_id, bbox[0], bbox[1], bbox[2], bbox[3]])
 
-            x1 = int(bbox[0])
-            y1 = int(bbox[1])
-            x2 = int(bbox[0] + bbox[2])
-            y2 = int(bbox[1] + 0.3 * bbox[3])
-            # print(x1, x2, y1, y2)
-            # if x1 > 0 and y1 > 0 and x2 > 0 and y2 > 0:
-            roi = image[y1:y2, x1:x2, :]
-            # print(roi.shape)
-            if roi.shape[0] > 0 and roi.shape[1] > 0:
-
-                faces = face_cascade.detectMultiScale(roi, 1.3, 5)
-                print(faces)
-                vis.viewer.color = 0, 255, 0
-                for (x, y, w, h) in faces:
-                    # cv2.rectangle(roi,(x,x+w),(y,y+h),(0,255,0),10)
-                    # cv2.imshow('hhh', roi)
-                    vis.viewer.rectangle(x1 + x, y1 + y, w, h, label=str(track.track_id))
+            # x1 = int(bbox[0])
+            # y1 = int(bbox[1])
+            # x2 = int(bbox[0] + bbox[2])
+            # y2 = int(bbox[1] + 0.3 * bbox[3])
+            # # print(x1, x2, y1, y2)
+            # # if x1 > 0 and y1 > 0 and x2 > 0 and y2 > 0:
+            # roi = image[y1:y2, x1:x2, :]
+            # # print(roi.shape)
+            # if roi.shape[0] > 0 and roi.shape[1] > 0:
+            #
+            #     faces = face_cascade.detectMultiScale(roi, 1.3, 5)
+            #     print(faces)
+            #     vis.viewer.color = 0, 255, 0
+            #     for (x, y, w, h) in faces:
+            #         # cv2.rectangle(roi,(x,x+w),(y,y+h),(0,255,0),10)
+            #         # cv2.imshow('hhh', roi)
+            #         vis.viewer.rectangle(x1 + x, y1 + y, w, h, label=str(track.track_id))
 
     # Run tracker.
     if display:
-        visualizer = visualization.Visualization(seq_info, update_ms=50)
+        visualizer = visualization.Visualization(seq_info, update_ms=30)
     else:
         visualizer = visualization.NoVisualization(seq_info)
 
@@ -238,48 +238,13 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             row[0], row[1], row[2], row[3], row[4], row[5]), file=f)
 
 
-def parse_args():
-    """ Parse command line arguments.
-    """
-    parser = argparse.ArgumentParser(description="Deep SORT")
-    parser.add_argument(
-        "--sequence_dir", help="Path to MOTChallenge sequence directory",
-        default=None, required=True)
-    parser.add_argument(
-        "--detection_file", help="Path to custom detections.", default=None,
-        required=True)
-    parser.add_argument(
-        "--output_file", help="Path to the tracking output file. This file will"
-                              " contain the tracking results on completion.",
-        default="/tmp/hypotheses.txt")
-    parser.add_argument(
-        "--min_confidence", help="Detection confidence threshold. Disregard "
-                                 "all detections that have a confidence lower than this value.",
-        default=0.8, type=float)
-    parser.add_argument(
-        "--min_detection_height", help="Threshold on the detection bounding "
-                                       "box height. Detections with height smaller than this value are "
-                                       "disregarded", default=0, type=int)
-    parser.add_argument(
-        "--nms_max_overlap", help="Non-maxima suppression threshold: Maximum "
-                                  "detection overlap.", default=1.0, type=float)
-    parser.add_argument(
-        "--max_cosine_distance", help="Gating threshold for cosine distance "
-                                      "metric (object appearance).", type=float, default=0.2)
-    parser.add_argument(
-        "--nn_budget", help="Maximum size of the appearance descriptors "
-                            "gallery. If None, no budget is enforced.", type=int, default=None)
-    parser.add_argument(
-        "--display", help="Show intermediate tracking results",
-        default=True, type=bool)
-    return parser.parse_args()
 
 
 if __name__ == "__main__":
-    # args = parse_args()
+
     run(
-        '../MOT16/train/MOT16-22',
-        './resources/detections/MOT16_train/MOT16-22.npy',
+        '../MOT16/train/MOT16-00',
+        './resources/detections/MOT16_train/MOT16-00.npy',
         './hypotheses.txt',
-        0.3, 1.0, 0,
-        0.2, 100, True)
+        min_confidence=0.3, nms_max_overlap=0.1, min_detection_height=0,
+        max_cosine_distance=0.8, nn_budget=100, display=True)
