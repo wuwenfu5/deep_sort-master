@@ -210,7 +210,7 @@ def main():
     encoder = create_box_encoder(
         '/home/wuwenfu5/PycharmProjects/deep_sort-master/resources/networks/mars-small128-tf13.pb',
         batch_size=32)
-    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-00',
+    generate_detections(encoder, '/home/wuwenfu5/PycharmProjects/MOT16/train/MOT16-24',
                         '../resources/detections/MOT16_train',
                         None)
 

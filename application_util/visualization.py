@@ -1,6 +1,7 @@
 # vim: expandtab:ts=4:sw=4
 import numpy as np
 import colorsys
+import cv2
 from .image_viewer import ImageViewer
 
 
@@ -119,7 +120,8 @@ class Visualization(object):
         self.viewer.thickness = 2
         self.viewer.color = 0, 0, 255
         for i, detection in enumerate(detections):
-            self.viewer.rectangle(*detection.tlwh)
+            self.viewer.rectangle_d(*detection.tlwh, label=str(detection.classfiy))
+
 
     def draw_trackers(self, tracks):
         self.viewer.thickness = 2

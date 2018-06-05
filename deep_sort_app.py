@@ -125,10 +125,10 @@ def create_detections(detection_mat, frame_idx, min_height=0):
 
     detection_list = []
     for row in detection_mat[mask]:
-        bbox, confidence, feature = row[2:6], row[6], row[10:]
+        bbox, confidence, feature = row[2:6], row[7], row[10:]
         if bbox[3] < min_height:
             continue
-        detection_list.append(Detection(bbox, confidence, feature))
+        detection_list.append(Detection(bbox, confidence, feature, row[8]))
     return detection_list
 
 
@@ -198,6 +198,13 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             vis.draw_detections(detections)
             vis.draw_trackers(tracker.tracks)
 
+            for detect in detections:
+                print(detect.classfiy)
+
+        # for track_ in tracker.tracks:
+        #
+        #     print(track_.mean)
+
         # Store results.
         for track in tracker.tracks:
             if not track.is_confirmed() or track.time_since_update > 1:
@@ -205,23 +212,6 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             bbox = track.to_tlwh()
             results.append([frame_idx, track.track_id, bbox[0], bbox[1], bbox[2], bbox[3]])
 
-            # x1 = int(bbox[0])
-            # y1 = int(bbox[1])
-            # x2 = int(bbox[0] + bbox[2])
-            # y2 = int(bbox[1] + 0.3 * bbox[3])
-            # # print(x1, x2, y1, y2)
-            # # if x1 > 0 and y1 > 0 and x2 > 0 and y2 > 0:
-            # roi = image[y1:y2, x1:x2, :]
-            # # print(roi.shape)
-            # if roi.shape[0] > 0 and roi.shape[1] > 0:
-            #
-            #     faces = face_cascade.detectMultiScale(roi, 1.3, 5)
-            #     print(faces)
-            #     vis.viewer.color = 0, 255, 0
-            #     for (x, y, w, h) in faces:
-            #         # cv2.rectangle(roi,(x,x+w),(y,y+h),(0,255,0),10)
-            #         # cv2.imshow('hhh', roi)
-            #         vis.viewer.rectangle(x1 + x, y1 + y, w, h, label=str(track.track_id))
 
     # Run tracker.
     if display:
@@ -243,8 +233,8 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
 if __name__ == "__main__":
 
     run(
-        '../MOT16/train/MOT16-00',
-        './resources/detections/MOT16_train/MOT16-00.npy',
+        '../MOT16/train/MOT16-24',
+        './resources/detections/MOT16_train/MOT16-24.npy',
         './hypotheses.txt',
-        min_confidence=0.3, nms_max_overlap=0.1, min_detection_height=0,
-        max_cosine_distance=0.8, nn_budget=100, display=True)
+        min_confidence=0.7, nms_max_overlap=0.1, min_detection_height=30,
+        max_cosine_distance=0.5, nn_budget=100, display=True)

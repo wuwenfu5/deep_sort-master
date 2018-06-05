@@ -106,7 +106,7 @@ class ImageViewer(object):
         self._user_fun = lambda: None
         self._terminate = False
 
-        self.image = np.zeros(self._window_shape + (3, ), dtype=np.uint8)
+        self.image = np.zeros(self._window_shape + (3,), dtype=np.uint8)
         self._color = (0, 0, 0)
         self.text_color = (255, 255, 255)
         self.thickness = 1
@@ -148,7 +148,39 @@ class ImageViewer(object):
 
             center = pt1[0] + 5, pt1[1] + 5 + text_size[0][1]
             pt2 = pt1[0] + 10 + text_size[0][0], pt1[1] + 10 + \
-                text_size[0][1]
+                  text_size[0][1]
+            cv2.rectangle(self.image, pt1, pt2, self._color, -1)
+            cv2.putText(self.image, label, center, cv2.FONT_HERSHEY_PLAIN,
+                        1, (255, 255, 255), self.thickness)
+
+    def rectangle_d(self, x, y, w, h, label=None):
+        """Draw a rectangle.
+
+        Parameters
+        ----------
+        x : float | int
+            Top left corner of the rectangle (x-axis).
+        y : float | int
+            Top let corner of the rectangle (y-axis).
+        w : float | int
+            Width of the rectangle.
+        h : float | int
+            Height of the rectangle.
+        label : Optional[str]
+            A text label that is placed at the top left corner of the
+            rectangle.
+
+        """
+        pt1 = int(x), int(y)
+        pt2 = int(x + w), int(y + h)
+        # cv2.rectangle(self.image, pt1, pt2, self._color, self.thickness)
+        if label is not None:
+            text_size = cv2.getTextSize(
+                label, cv2.FONT_HERSHEY_PLAIN, 1, self.thickness)
+
+            center = pt1[0] + 5, pt1[1] - 15 + text_size[0][1]
+            pt1 = pt1[0], pt1[1] - 20
+            pt2 = pt1[0] + 10 + text_size[0][0], pt1[1] + 10 + text_size[0][1]
             cv2.rectangle(self.image, pt1, pt2, self._color, -1)
             cv2.putText(self.image, label, center, cv2.FONT_HERSHEY_PLAIN,
                         1, (255, 255, 255), self.thickness)
@@ -170,7 +202,7 @@ class ImageViewer(object):
         """
         image_size = int(radius + self.thickness + 1.5)  # actually half size
         roi = int(x - image_size), int(y - image_size), \
-            int(2 * image_size), int(2 * image_size)
+              int(2 * image_size), int(2 * image_size)
         if not is_in_bounds(self.image, roi):
             return
 
@@ -308,7 +340,7 @@ class ImageViewer(object):
                     self._video_writer.write(
                         cv2.resize(self.image, self._window_shape))
             t1 = time.time()
-            remaining_time = max(1, int(self._update_ms - 1e3*(t1-t0)))
+            remaining_time = max(1, int(self._update_ms - 1e3 * (t1 - t0)))
             cv2.imshow(
                 self._caption, cv2.resize(self.image, self._window_shape[:2]))
             key = cv2.waitKey(remaining_time)

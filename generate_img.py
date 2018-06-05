@@ -12,7 +12,7 @@ import time
 
 t1 = time.perf_counter()
 
-cap = cv2.VideoCapture(r'/media/wuwenfu5/Win_Ubuntu_Swap/Python_/Material/Many.mp4')
+cap = cv2.VideoCapture(r'/media/wuwenfu5/Win_Ubuntu_Swap/Python_/Material/MyMOT/shitang5.AVI')
 
 if cap.isOpened() is False:
     print('capture is not opened')
