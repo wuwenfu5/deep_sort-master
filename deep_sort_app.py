@@ -198,6 +198,8 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             vis.draw_detections(detections)
             vis.draw_trackers(tracker.tracks)
 
+            cv2.imwrite(str('./logs/%06d.jpg' % frame_idx), vis.viewer.image)
+            print('write %06d.jpg' % frame_idx)
             for detect in detections:
                 print(detect.classfiy)
 

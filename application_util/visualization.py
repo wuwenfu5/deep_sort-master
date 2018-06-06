@@ -1,7 +1,8 @@
 # vim: expandtab:ts=4:sw=4
 import numpy as np
 import colorsys
-import cv2
+# import cv2
+import os
 from .image_viewer import ImageViewer
 
 
@@ -119,8 +120,15 @@ class Visualization(object):
     def draw_detections(self, detections):
         self.viewer.thickness = 2
         self.viewer.color = 0, 0, 255
+
+        classes_path = os.path.expanduser('coco_classes.txt')
+        with open(classes_path) as f:
+            class_names = f.readlines()
+        class_names = [c.strip() for c in class_names]
+        # print(class_names)
+
         for i, detection in enumerate(detections):
-            self.viewer.rectangle_d(*detection.tlwh, label=str(detection.classfiy))
+            self.viewer.rectangle_d(*detection.tlwh, label=str(class_names[int(detection.classfiy)]))
 
 
     def draw_trackers(self, tracks):

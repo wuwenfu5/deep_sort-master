@@ -183,7 +183,7 @@ class ImageViewer(object):
             pt2 = pt1[0] + 10 + text_size[0][0], pt1[1] + 10 + text_size[0][1]
             cv2.rectangle(self.image, pt1, pt2, self._color, -1)
             cv2.putText(self.image, label, center, cv2.FONT_HERSHEY_PLAIN,
-                        1, (255, 255, 255), self.thickness)
+                        1, (255, 255, 255), 1)
 
     def circle(self, x, y, radius, label=None):
         """Draw a circle.
