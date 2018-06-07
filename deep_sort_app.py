@@ -198,8 +198,8 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             # vis.draw_detections(detections)
             vis.draw_trackers(tracker.tracks)
 
-            cv2.imwrite(str('./logs/%06d.jpg' % frame_idx), vis.viewer.image)
-            print('write %06d.jpg' % frame_idx)
+            # cv2.imwrite(str('./logs/%06d.jpg' % frame_idx), vis.viewer.image)
+            # print('write %06d.jpg' % frame_idx)
 
         # for track_ in tracker.tracks:
         #
@@ -236,5 +236,5 @@ if __name__ == "__main__":
         '../MOT16/train/MOT16-24',
         './resources/detections/MOT16_train/MOT16-24.npy',
         './hypotheses.txt',
-        min_confidence=0.7, nms_max_overlap=0.1, min_detection_height=30,
+        min_confidence=0.7, nms_max_overlap=0.9, min_detection_height=30,
         max_cosine_distance=0.5, nn_budget=100, display=True)
