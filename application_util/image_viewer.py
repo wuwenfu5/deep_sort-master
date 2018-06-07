@@ -121,7 +121,7 @@ class ImageViewer(object):
             raise ValueError("color must be tuple of 3")
         self._color = tuple(int(c) for c in value)
 
-    def rectangle(self, x, y, w, h, label=None):
+    def rectangle(self, x, y, w, h, label=None, classfiy=None):
         """Draw a rectangle.
 
         Parameters
@@ -153,37 +153,19 @@ class ImageViewer(object):
             cv2.putText(self.image, label, center, cv2.FONT_HERSHEY_PLAIN,
                         1, (255, 255, 255), self.thickness)
 
-    def rectangle_d(self, x, y, w, h, label=None):
-        """Draw a rectangle.
+            if classfiy is not None:
+                text_size = cv2.getTextSize(
+                    classfiy, cv2.FONT_HERSHEY_PLAIN, 1, self.thickness)
 
-        Parameters
-        ----------
-        x : float | int
-            Top left corner of the rectangle (x-axis).
-        y : float | int
-            Top let corner of the rectangle (y-axis).
-        w : float | int
-            Width of the rectangle.
-        h : float | int
-            Height of the rectangle.
-        label : Optional[str]
-            A text label that is placed at the top left corner of the
-            rectangle.
+                center = pt1[0] + 5, pt1[1] - 15 + text_size[0][1]
+                pt1 = pt1[0] - 1, pt1[1] - 20
+                pt2 = pt1[0] + 10 + text_size[0][0], pt1[1] + 10 + \
+                      text_size[0][1]
+                cv2.rectangle(self.image, pt1, pt2, self._color, -1)
+                cv2.putText(self.image, classfiy, center, cv2.FONT_HERSHEY_PLAIN,
+                            1, (255, 255, 255), self.thickness)
 
-        """
-        pt1 = int(x), int(y)
-        pt2 = int(x + w), int(y + h)
-        # cv2.rectangle(self.image, pt1, pt2, self._color, self.thickness)
-        if label is not None:
-            text_size = cv2.getTextSize(
-                label, cv2.FONT_HERSHEY_PLAIN, 1, self.thickness)
 
-            center = pt1[0] + 5, pt1[1] - 15 + text_size[0][1]
-            pt1 = pt1[0], pt1[1] - 20
-            pt2 = pt1[0] + 10 + text_size[0][0], pt1[1] + 10 + text_size[0][1]
-            cv2.rectangle(self.image, pt1, pt2, self._color, -1)
-            cv2.putText(self.image, label, center, cv2.FONT_HERSHEY_PLAIN,
-                        1, (255, 255, 255), 1)
 
     def circle(self, x, y, radius, label=None):
         """Draw a circle.

@@ -195,13 +195,11 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
             image = cv2.imread(
                 seq_info["image_filenames"][frame_idx], cv2.IMREAD_COLOR)
             vis.set_image(image.copy())
-            vis.draw_detections(detections)
+            # vis.draw_detections(detections)
             vis.draw_trackers(tracker.tracks)
 
             cv2.imwrite(str('./logs/%06d.jpg' % frame_idx), vis.viewer.image)
             print('write %06d.jpg' % frame_idx)
-            for detect in detections:
-                print(detect.classfiy)
 
         # for track_ in tracker.tracks:
         #

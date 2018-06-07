@@ -121,24 +121,32 @@ class Visualization(object):
         self.viewer.thickness = 2
         self.viewer.color = 0, 0, 255
 
-        classes_path = os.path.expanduser('coco_classes.txt')
-        with open(classes_path) as f:
-            class_names = f.readlines()
-        class_names = [c.strip() for c in class_names]
+        # classes_path = os.path.expanduser('coco_classes.txt')
+        # with open(classes_path) as f:
+        #     class_names = f.readlines()
+        # class_names = [c.strip() for c in class_names]
         # print(class_names)
 
         for i, detection in enumerate(detections):
-            self.viewer.rectangle_d(*detection.tlwh, label=str(class_names[int(detection.classfiy)]))
+            self.viewer.rectangle(*detection.tlwh)
+            # self.viewer.rectangle_d(*detection.tlwh, label=str(class_names[int(detection.classfiy)]))
 
 
     def draw_trackers(self, tracks):
         self.viewer.thickness = 2
         for track in tracks:
+            # print(track.classfiy)
             if not track.is_confirmed() or track.time_since_update > 0:
                 continue
             self.viewer.color = create_unique_color_uchar(track.track_id)
+
+            classes_path = os.path.expanduser('coco_classes.txt')
+            with open(classes_path) as f:
+                class_names = f.readlines()
+            class_names = [c.strip() for c in class_names]
+
             self.viewer.rectangle(
-                *track.to_tlwh().astype(np.int), label=str(track.track_id))
+                *track.to_tlwh().astype(np.int), label=str(track.track_id), classfiy=class_names[int(track.classfiy)])
             # self.viewer.gaussian(track.mean[:2], track.covariance[:2, :2],
             #                      label="%d" % track.track_id)
 #

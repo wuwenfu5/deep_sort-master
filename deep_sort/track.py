@@ -70,6 +70,7 @@ class Track:
         self.track_id = track_id
         self.hits = 1
         self.age = 1
+        self.classfiy = 0
         self.time_since_update = 0
 
         self.state = TrackState.Tentative
@@ -138,6 +139,8 @@ class Track:
         self.mean, self.covariance = kf.update(
             self.mean, self.covariance, detection.to_xyah())
         self.features.append(detection.feature)
+
+        self.classfiy = detection.classfiy
 
         self.hits += 1
         self.time_since_update = 0
